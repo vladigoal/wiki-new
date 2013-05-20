@@ -28,7 +28,7 @@ def auth_check(request):
             login(request, user)
             response =  render_to_response('login.html',
             context_instance=RequestContext(request))
-            response = redirect('/manual')
+            response = redirect('/index.html')
             response.set_cookie("username", username)
             return response
         #else:
@@ -39,5 +39,15 @@ def auth_check(request):
     {'form':  AuthenticationForm, "msg": msg},
     context_instance=RequestContext(request))
     if request.COOKIES.get('sessionid'):
-        response = redirect('/manual')
+        response = redirect('/index.html')
     return response
+
+def manual_view(request):
+    template_name = "site_base.html"
+
+
+    response =  render_to_response('site_base.html',
+    {},
+    context_instance=RequestContext(request))
+    return response
+    

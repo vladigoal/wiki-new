@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, include, url
 from views import *
-from manual.views import manual_view
 from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
@@ -9,8 +8,9 @@ admin.autodiscover()
 urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
     ('^$', auth_check),
-    (r'^manual/', include('manual.urls')),
-    (r'^cabinet/', include('cabinet.urls')),
+    (r'index.html', manual_view),
+    #(r'^manual/', include('manual.urls')),
+    #(r'^cabinet/', include('cabinet.urls')),
 )
 
 
