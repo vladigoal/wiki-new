@@ -1,0 +1,21 @@
+{% extends "site_base.html" %}
+
+{% block left_menu %}{% endblock %}
+
+{% block content %}
+  <div class="span10 offset1">
+    <ul class="nav nav-tabs">
+        {% for menu in cabinet_menu %}
+            {% if menu.active %}
+                <li class="active"><a href="{{ menu.href }}">{{ menu.name }}</a></li>
+            {% else %}
+                <li><a href="{{ menu.href }}">{{ menu.name }}</a></li>
+            {% endif %}
+        {% endfor%}
+    </ul>
+
+    {% block cabinte_content %}{% endblock %}
+  </div>
+{% endblock %}
+
+{% block build_menu_js %}{% endblock %}

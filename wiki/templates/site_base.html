@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="{{ STATIC_URL }}bootstrap/assets/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+
+      .form-signout {
+        max-width: 100px;
+        padding: 2px 2px 0 17px;
+        margin: 0;
+      }
+      a.go{
+        color: #000;
+      }
+    </style>
+    <link href="{{ STATIC_URL }}bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../assets/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="../assets/ico/favicon.png">
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="#">Smart Manual</a>
+          <div class="nav-collapse collapse">
+              <form class="form-signout pull-right" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="logout" value="1">
+                <input class="btn btn-small btn-primary" type="submit" value='Выйти'>
+              </form>
+            <p class="navbar-text pull-right">
+              Привет, <a href="/cabinet/profile/" class="navbar-link">{{ username }}</a> 
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid well sidebar-nav">
+      
+
+      <div class="row-fluid">
+        {% block left_menu %}
+          <div class="span3 menu_left">
+              <div class="accordion" id="accordion1">
+                  <div class="accordion-group">
+                  <ul class="nav nav-list">
+                  </ul>
+                  </div>
+              </div>
+              <div class="well sidebar-nav">
+                  <ul class="nav nav-list">
+                    <li class="active"><a href="#">Link</a></li>
+                    <li><a href="#">Link</a></li>
+                    <li><a href="#">Link</a></li>
+                    <li><a href="#">Link</a></li>
+                  </ul>
+                </div>
+          </div>
+        {% endblock %}
+
+        {% block content %}{% endblock %}
+      </div>
+
+      <hr>
+
+      <footer class="span10 offset1">
+        <p>&copy; Smart Web 2013</p>
+      </footer>
+
+    </div>
+
+    <script src="{{ STATIC_URL }}bootstrap/assets/js/jquery.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap/assets/js/bootstrap-transition.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap/assets/js/bootstrap-alert.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap/assets/js/bootstrap-modal.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap/assets/js/bootstrap-dropdown.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap/assets/js/bootstrap-scrollspy.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap/assets/js/bootstrap-tab.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap/assets/js/bootstrap-tooltip.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap/assets/js/bootstrap-popover.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap/assets/js/bootstrap-button.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap/assets/js/bootstrap-collapse.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap/assets/js/bootstrap-carousel.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap/assets/js/bootstrap-typeahead.js"></script>
+    
+    {% block build_menu_js %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+        
+            var max_level = 1
+            var accordion_num = 2
+
+            $.get('/ajax/menu', function(data){
+                try{
+                    data = eval("("+data+")")
+                } catch(e){
+                    data = new Array()
+                }
+                var data_len = data.list.length
+                
+                if(data_len > 0){
+                    for (i=0; i<data_len; i++){
+                        if(data.list[i].level > max_level)
+                            max_level = data.list[i].level - 0 
+
+                        if((data.list[i].level - 0) == 1){
+                            if((data.list[i].type - 0) == 1){
+                                $(".menu_left .accordion .accordion-group ul").append('<li><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion'+accordion_num+'" href="#collapse'+data.list[i].id+'">'+data.list[i].name+'</a></div><div id="collapse'+data.list[i].id+'" class="accordion-body collapse parent_'+data.list[i].id+'"><div class="accordion-inner"></div></div></li>')
+                            }else{
+                                if($(".menu_left .accordion .accordion-group ul").length > 0){
+                                    $(".menu_left .accordion .accordion-group ul").append('<li class="parent_'+data.list[i].id+'"><a class="go" href="/manual/'+data.list[i].slug+'.html">'+data.list[i].name+'</a></li>')
+                                }else{
+                                    $(".menu_left .accordion .accordion-group").append('<ul><li class="active parent_'+data.list[i].id+'"><a class="go" href="/manual/'+data.list[i].slug+'.html">'+data.list[i].name+'</a></li></ul>')
+                                }
+                            }
+                        }
+                    }
+                    if(max_level > 1)
+                        build_menu(data, data_len, 2)
+                }
+            })
+
+            function build_menu(data, data_len, level){
+                '<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">Web development</a></div><div id="collapseOne" class="accordion-body collapse"><div class="accordion-inner">asd</div></div>'
+                var cur_obj = ""
+                for(i=0; i<data_len; i++){
+                    if((data.list[i].level - 0) == level){
+                        cur_obj = $(".menu_left .parent_"+data.list[i].parent_id)
+                        if((data.list[i].type - 0) == 2){
+                            if($("ul", cur_obj).length > 0){
+                                (cur_obj).find("ul").append('<li class="parent_'+data.list[i].id+'"><a class="go" href="/manual/'+data.list[i].slug+'.html">'+data.list[i].name+'</a></li>')
+                            }else{
+                                cur_obj.append('<ul class="nav nav-list"><li class="parent_'+data.list[i].id+'"><a class="go" href="/manual/'+data.list[i].slug+'.html">'+data.list[i].name+'</li></ul>')
+                            }
+                        }else{
+                            cur_obj.append('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion'+accordion_num+'" href="#collapse'+data.list[i].id+'">'+data.list[i].name+'</a></div><div id="collapse'+data.list[i].id+'" class="accordion-body collapse parent_'+data.list[i].id+'"><div class="accordion-inner"></div></div>')
+                        }
+                    }
+                }
+
+                if(level < max_level){
+                    level += 1
+                    build_menu(data, data_len, level)
+                }
+            }
+        })
+    </script>
+    {% endblock %}
+  </body>
+</html>
+
+
