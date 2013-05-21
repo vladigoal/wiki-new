@@ -41,13 +41,4 @@ def auth_check(request):
     if request.COOKIES.get('sessionid'):
         response = redirect('/index.html')
     return response
-
-def manual_view(request):
-    template_name = "site_base.html"
-
-
-    response =  render_to_response('site_base.html',
-    {},
-    context_instance=RequestContext(request))
-    return response
     
