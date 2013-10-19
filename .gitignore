@@ -7,3 +7,4 @@ uwsgi.ini
 sphinx_conf/
 
 db.*
+.idea
